@@ -7,16 +7,17 @@
   <title>相似三角形 | 中二數學與 DSE 基礎</title>
   <style>
     :root {
-      --ink: #172b2b;
-      --muted: #526364;
-      --line: #cbd7d4;
-      --paper: #f8faf7;
+      --ink: #18302f;
+      --muted: #536765;
+      --line: #d7e1dd;
+      --paper: #f5f8f6;
       --white: #fff;
-      --teal: #087a6d;
-      --teal-soft: #e3f3ee;
-      --coral: #c75238;
-      --coral-soft: #fbece6;
-      --gold: #9c650e;
+      --teal: #08786e;
+      --teal-soft: #e4f4ef;
+      --coral: #ce4c66;
+      --coral-soft: #ffedf1;
+      --blue: #2b70a5;
+      --shadow: 0 16px 38px rgba(20, 53, 47, .07);
     }
     * { box-sizing: border-box; }
     html { scroll-behavior: smooth; }
@@ -25,68 +26,89 @@
       background: var(--paper);
       color: var(--ink);
       font-family: "Noto Sans TC", "Microsoft JhengHei", "PingFang TC", sans-serif;
-      line-height: 1.65;
+      line-height: 1.7;
     }
     button, input { font: inherit; }
     button:focus-visible, input:focus-visible, a:focus-visible { outline: 3px solid var(--teal); outline-offset: 3px; }
     .top {
-      border-bottom: 1px solid var(--line);
-      background: var(--white);
+      background: var(--ink);
+      color: var(--white);
     }
-    .wrap { width: min(1080px, calc(100% - 36px)); margin-inline: auto; }
-    .top .wrap { display: flex; align-items: center; justify-content: space-between; gap: 20px; min-height: 60px; }
-    .brand { font-size: 14px; font-weight: 800; color: var(--teal); }
-    .top a { color: var(--muted); text-decoration: none; font-size: 13px; }
-    .top a:hover { color: var(--teal); text-decoration: underline; }
-    main { padding-bottom: 70px; }
-    .intro { padding: 46px 0 28px; }
-    .eyebrow { margin: 0 0 10px; color: var(--teal); font-weight: 800; font-size: 12px; letter-spacing: .08em; }
-    h1 { font-size: clamp(29px, 4vw, 46px); line-height: 1.25; margin: 0; letter-spacing: 0; }
-    .lead { max-width: 760px; color: var(--muted); margin: 16px 0 0; font-size: 17px; }
-    h2 { font-size: 23px; line-height: 1.4; margin: 0 0 14px; }
-    h3 { font-size: 16px; margin: 0 0 8px; }
+    .wrap { width: min(1120px, calc(100% - 48px)); margin-inline: auto; }
+    .top .wrap { display: flex; align-items: center; justify-content: space-between; gap: 24px; min-height: 68px; }
+    .brand { display: flex; align-items: center; gap: 12px; font-size: 15px; font-weight: 800; line-height: 1.2; white-space: nowrap; }
+    .brand-mark { display: grid; place-items: center; width: 34px; height: 34px; border: 1px solid rgba(255,255,255,.45); color: #a4e0d2; font-size: 22px; }
+    .brand small { display: block; margin-top: 3px; font-size: 10px; font-weight: 500; color: #b8cfca; }
+    .top nav { display: flex; gap: 28px; align-items: center; }
+    .top a { color: #d4e2dd; text-decoration: none; font-size: 13px; white-space: nowrap; }
+    .top a:hover { color: var(--white); text-decoration: underline; text-underline-offset: 5px; }
+    main { counter-reset: lesson; padding-bottom: 80px; }
+    .intro { padding: 58px 0 55px; }
+    .eyebrow { display: flex; align-items: center; gap: 12px; margin: 0 0 18px; color: var(--teal); font-weight: 800; font-size: 12px; }
+    .eyebrow::before { content: ""; width: 28px; height: 2px; background: var(--teal); }
+    h1 { font-size: clamp(34px, 4.6vw, 55px); line-height: 1.25; margin: 0; letter-spacing: 0; max-width: 900px; }
+    h1 span { color: var(--teal); }
+    .lead { max-width: 710px; color: var(--muted); margin: 20px 0 0; font-size: 17px; }
+    h2 { font-size: clamp(25px, 2.5vw, 31px); line-height: 1.4; margin: 0 0 16px; }
+    h3 { font-size: 17px; margin: 0 0 9px; }
     p { margin: 0 0 12px; }
-    .section { padding: 28px 0; border-top: 1px solid var(--line); }
-    .similar-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; align-items: end; max-width: 730px; margin: 20px 0; }
+    .section { counter-increment: lesson; position: relative; padding: 49px 0 56px; border-top: 1px solid var(--line); scroll-margin-top: 20px; }
+    .section::before { content: "0" counter(lesson) "  ·  GEOMETRY"; display: block; margin-bottom: 13px; color: var(--teal); font: 700 12px Georgia, "Times New Roman", serif; }
+    .section > p { max-width: 820px; }
+    .similar-grid { display: grid; grid-template-columns: minmax(0, 1fr) 72px minmax(0, 1fr); gap: 20px; align-items: center; max-width: 900px; margin: 25px 0 21px; padding: 22px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
     .similar-item { text-align: center; }
-    .similar-item svg { display: block; width: 100%; max-height: 210px; }
+    .similar-item svg { display: block; width: 100%; max-height: 196px; }
     .similar-item svg polygon { fill: var(--teal-soft); stroke: var(--teal); stroke-width: 3; stroke-linejoin: round; }
     .similar-item svg text { fill: var(--ink); font: 16px "Noto Sans TC", "Microsoft JhengHei", sans-serif; }
-    .similar-item p { margin: 0; font-size: 14px; }
-    .plain-point { font-size: 17px; font-weight: 700; }
-    .simple-steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; padding-left: 1.5em; margin: 18px 0 0; }
-    .simple-steps li { padding-right: 8px; }
-    .rule-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
-    .rule { padding: 19px 20px; background: var(--white); border: 1px solid var(--line); border-radius: 6px; }
-    .rule > strong { display: block; color: var(--teal); font-size: 26px; line-height: 1.2; margin-bottom: 9px; }
-    .rule[data-demo="sas"] > strong { font-size: 19px; min-height: 62px; }
+    .similar-item p { margin: 0; font-size: 13px; color: var(--muted); }
+    .scale-badge { width: 60px; height: 60px; display: grid; place-items: center; border: 1px solid var(--line); border-radius: 50%; background: var(--white); color: var(--coral); font: 700 22px Georgia, "Times New Roman", serif; }
+    .ratio-line { margin: 4px 0 18px; color: var(--ink); }
+    math.fraction-math { font-size: 1.18em; vertical-align: -.22em; }
+    .ratio-line math.fraction-math { font-size: 1.4em; }
+    .plain-point { font-size: 18px; font-weight: 700; }
+    .simple-steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; padding-left: 1.5em; margin: 24px 0 0; }
+    .simple-steps li { padding: 0 10px 0 4px; }
+    .simple-steps li::marker { color: var(--coral); font-weight: 800; }
+    .rule-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 26px; }
+    .rule { display: flex; flex-direction: column; min-width: 0; padding: 22px; background: var(--white); border: 1px solid var(--line); border-radius: 6px; box-shadow: var(--shadow); }
+    .rule-number { display: block; color: var(--coral); font: 700 12px Georgia, "Times New Roman", serif; margin-bottom: 18px; }
+    .rule > strong { display: block; min-height: 58px; color: var(--ink); font-size: 28px; line-height: 1.22; margin-bottom: 12px; }
+    .rule[data-demo="sas"] > strong { font-size: 20px; }
+    .rule > p:not(.demo-caption) { min-height: 74px; }
     .rule p { color: var(--muted); margin: 0; font-size: 14px; }
     .rule b { color: var(--ink); }
-    .rule svg { display: block; width: 100%; margin: 14px 0 8px; overflow: visible; }
+    .rule svg { display: block; width: 100%; margin: 10px 0 13px; overflow: visible; }
     .rule svg .demo-triangle { fill: var(--teal-soft); stroke: var(--teal); stroke-width: 2.5; stroke-linejoin: round; }
     .rule svg .demo-moving { fill: var(--coral-soft); stroke: var(--coral); }
-    .rule svg .demo-mark { fill: none; stroke: var(--gold); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+    .rule svg .demo-open { fill: none; stroke: var(--teal); stroke-width: 2.5; stroke-linejoin: round; }
+    .rule svg .demo-open.demo-moving { stroke: var(--coral); }
+    .rule svg .demo-close { fill: none; stroke: var(--teal); stroke-width: 2.5; stroke-dasharray: 1; stroke-dashoffset: 1; opacity: 0; }
+    .rule svg .demo-close.demo-moving { stroke: var(--coral); }
+    .rule svg .demo-mark { fill: none; stroke: var(--blue); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
     .rule svg .demo-mark.secondary { stroke: var(--teal); }
     .rule svg text { fill: var(--muted); font: 13px "Noto Sans TC", "Microsoft JhengHei", sans-serif; }
-    .rule svg .demo-edge { stroke: var(--gold); stroke-width: 5; stroke-linecap: round; opacity: 0; }
-    .rule svg .demo-edge.visible { opacity: 1; }
-    .rule svg .demo-mark { opacity: .25; }
-    .rule svg .demo-mark.visible { opacity: 1; }
-    .rule .demo-caption { min-height: 48px; color: var(--ink); font-size: 14px; font-weight: 700; }
-    .rule .demo-action { display: flex; align-items: center; gap: 12px; margin-top: 10px; }
-    .rule button { border: 1px solid var(--teal); background: var(--white); color: var(--teal); border-radius: 5px; padding: 6px 12px; font-weight: 700; cursor: pointer; }
-    .rule button:hover { background: var(--teal-soft); }
+    .rule svg .demo-edge { stroke: var(--blue); stroke-width: 4; stroke-linecap: round; }
+    .rule svg .demo-mark, .rule svg .demo-edge { stroke-dasharray: 1; stroke-dashoffset: 1; opacity: 0; transition: stroke-dashoffset .55s cubic-bezier(.22, 1, .36, 1), opacity .25s ease; }
+    .rule svg .demo-mark.visible, .rule svg .demo-edge.visible { stroke-dashoffset: 0; opacity: 1; }
+    .demo-progress { height: 3px; margin: 0 0 15px; background: #e6eeea; overflow: hidden; }
+    .demo-progress span { display: block; width: 0; height: 100%; background: var(--blue); }
+    .rule .demo-caption { min-height: 55px; color: var(--ink); font-size: 14px; font-weight: 700; }
+    .rule .demo-action { display: flex; align-items: center; gap: 12px; margin-top: auto; padding-top: 12px; border-top: 1px solid var(--line); }
+    .rule button { border: 0; background: var(--ink); color: var(--white); border-radius: 4px; min-width: 80px; min-height: 38px; padding: 6px 12px; font-weight: 700; cursor: pointer; }
+    .rule button:hover { background: var(--teal); }
     .rule button:disabled { opacity: .6; cursor: wait; }
     .rule .demo-status { font-size: 12px; color: var(--muted); }
-    .mini-note { margin: 14px 0 0; color: var(--muted); font-size: 14px; }
+    .mini-note { margin: 16px 0 0; color: var(--muted); font-size: 14px; }
     .explore-head { display: flex; justify-content: space-between; align-items: end; gap: 16px; flex-wrap: wrap; }
     .explore-head p { color: var(--muted); margin: 0; }
-    .workspace { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(250px, .8fr); gap: 22px; align-items: start; margin-top: 21px; }
+    .workspace { display: grid; grid-template-columns: minmax(0, 1.65fr) minmax(270px, .8fr); gap: 22px; align-items: start; margin-top: 30px; }
     .figure-area { min-width: 0; }
     .figure {
       width: 100%;
       display: block;
-      background: var(--white);
+      background-color: var(--white);
+      background-image: linear-gradient(to right, rgba(24, 48, 47, .045) 1px, transparent 1px), linear-gradient(to bottom, rgba(24, 48, 47, .045) 1px, transparent 1px);
+      background-size: 30px 30px;
       border: 1px solid var(--line);
       border-radius: 6px;
       aspect-ratio: 760 / 370;
@@ -110,9 +132,9 @@
     .swatch { display: inline-block; width: 18px; height: 4px; border-radius: 2px; }
     .near-swatch { background: var(--teal); }
     .far-swatch { background: var(--coral); }
-    .control-area { padding: 20px; background: var(--white); border: 1px solid var(--line); border-radius: 6px; }
+    .control-area { padding: 24px; background: var(--white); border: 1px solid var(--line); border-radius: 6px; box-shadow: var(--shadow); }
     .control-area label { display: block; font-size: 14px; font-weight: 700; margin-bottom: 10px; }
-    .value { color: var(--teal); font-variant-numeric: tabular-nums; font-size: 23px; }
+    .value { color: var(--teal); font-variant-numeric: tabular-nums; font-size: 27px; }
     input[type="range"] { width: 100%; accent-color: var(--teal); min-height: 32px; }
     .range-ends { display: flex; justify-content: space-between; color: var(--muted); font-size: 12px; }
     .fixed { margin-top: 21px; padding-top: 17px; border-top: 1px solid var(--line); font-size: 14px; }
@@ -127,30 +149,38 @@
     details.exam { margin-top: 15px; }
     .near-text { color: var(--teal); }
     .far-text { color: var(--coral); }
-    .takeaway { margin-top: 20px; padding: 18px 20px; background: var(--coral-soft); border-left: 4px solid var(--coral); }
-    .takeaway strong { color: #953a28; }
+    .takeaway { margin-top: 28px; padding: 23px 26px; background: var(--coral-soft); border-left: 4px solid var(--coral); }
+    .takeaway strong { color: #9b3650; }
     .takeaway p { margin: 4px 0 0; }
     .proof-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 30px; }
     .proof-grid ol { margin: 0; padding-left: 1.5em; }
     .proof-grid li { margin: 9px 0; }
     .math { font-family: Georgia, "Times New Roman", serif; font-size: 1.06em; white-space: nowrap; }
-    .example { margin-top: 12px; padding: 17px 20px; background: var(--teal-soft); border-left: 4px solid var(--teal); }
+    .example { margin-top: 20px; padding: 19px 23px; background: var(--teal-soft); border-left: 4px solid var(--teal); }
     .example p:last-child { margin-bottom: 0; }
-    footer { border-top: 1px solid var(--line); padding: 24px 0 40px; color: var(--muted); font-size: 13px; }
+    footer { background: var(--ink); padding: 28px 0 40px; color: #b8cfca; font-size: 13px; }
+    @media (prefers-reduced-motion: reduce) {
+      .rule svg .demo-mark, .rule svg .demo-edge { transition: none; }
+    }
     @media (max-width: 760px) {
-      .intro { padding-top: 34px; }
+      .intro { padding: 43px 0 42px; }
+      .top nav a:not(:last-child) { display: none; }
+      .section { padding: 39px 0 44px; }
       .rule-grid, .workspace, .proof-grid, .simple-steps { grid-template-columns: 1fr; }
-      .rule-grid { gap: 10px; }
-      .rule { padding: 15px 17px; }
+      .rule-grid { gap: 15px; }
+      .rule { padding: 20px; }
+      .rule > strong, .rule > p:not(.demo-caption) { min-height: 0; }
+      .rule svg { max-width: 440px; margin-inline: auto; }
       .figure { aspect-ratio: 760 / 420; }
     }
     @media (max-width: 440px) {
-      .wrap { width: min(100% - 24px, 1080px); }
-      .top .wrap { min-height: 56px; }
+      .wrap { width: min(100% - 28px, 1120px); }
+      .top .wrap { min-height: 62px; }
       .top a { font-size: 12px; }
       .figure text { font-size: 23px; }
       .figure text.small { font-size: 19px; }
       .similar-grid { grid-template-columns: 1fr; gap: 10px; }
+      .scale-badge { margin-inline: auto; }
       .similar-item svg { max-height: 175px; }
     }
   </style>
@@ -158,18 +188,18 @@
 <body>
   <header class="top">
     <div class="wrap">
-      <div class="brand">中二數學 · DSE 基礎</div>
-      <a href="#counterexample">看看邊邊角 ↓</a>
+      <div class="brand"><span class="brand-mark" aria-hidden="true">△</span><span>幾何筆記<small>中二數學 · DSE 基礎</small></span></div>
+      <nav aria-label="頁面導覽"><a href="#similar-title">概念</a><a href="#rules-title">判別</a><a href="#counterexample">反例 ↓</a></nav>
     </div>
   </header>
   <main class="wrap">
     <section class="intro">
-      <p class="eyebrow">相似三角形 / SIMILAR TRIANGLES</p>
-      <h1>相似三角形：<br>形狀一樣，大小可以不同</h1>
+      <p class="eyebrow">GEOMETRY NOTES · 相似三角形</p>
+      <h1>相似三角形：<br><span>形狀一樣，大小可以不同</span></h1>
       <p class="lead">先認識甚麼是「相似」，再看看為甚麼只知道「兩條邊和一個角」有時仍然不夠。</p>
     </section>
 
-    <section class="section" aria-labelledby="similar-title">
+    <section class="section" id="similar" aria-labelledby="similar-title">
       <h2 id="similar-title">甚麼是相似三角形？</h2>
       <p>想像把一個三角形放大或縮小，沒有把它拉歪：<strong>形狀不變</strong>，兩個三角形就相似。</p>
       <div class="similar-grid">
@@ -180,6 +210,7 @@
           </svg>
           <p>小三角形：3、4、5</p>
         </div>
+        <div class="scale-badge" aria-label="放大兩倍">×2</div>
         <div class="similar-item">
           <svg viewBox="0 0 280 190" role="img" aria-label="大三角形，三條邊長為 6、8、10">
             <polygon points="40,165 240,165 40,15"></polygon>
@@ -187,6 +218,13 @@
           </svg>
           <p>大三角形：6、8、10</p>
         </div>
+      </div>
+      <div class="ratio-line">
+        <math class="fraction-math" aria-label="三除以六等於四除以八等於五除以十">
+          <mfrac><mn>3</mn><mn>6</mn></mfrac><mo>=</mo>
+          <mfrac><mn>4</mn><mn>8</mn></mfrac><mo>=</mo>
+          <mfrac><mn>5</mn><mn>10</mn></mfrac>
+        </math>
       </div>
       <p class="plain-point">每條對應的邊都變成 2 倍，角度沒有改變，所以它們相似。</p>
       <p class="mini-note">「對應」即兩個三角形中位置相同的邊或角。三角形轉了方向，仍然可以相似。</p>
@@ -196,43 +234,51 @@
       <h2 id="rules-title">怎樣知道兩個三角形相似？</h2>
       <div class="rule-grid">
         <div class="rule" data-demo="aaa">
+          <span class="rule-number">01 · ANGLES</span>
           <strong>AAA</strong><p><strong>三組對應角</strong>一樣大。（其實知道兩組，第三組也會相等。）</p>
           <svg viewBox="0 0 350 180" role="img" aria-label="AAA：三組對應角相等，三角形放大後仍相似">
             <polygon class="demo-triangle" points="24,150 94,150 24,97.5"></polygon>
             <polygon class="demo-triangle demo-moving" data-moving points="160,150 230,150 160,97.5"></polygon>
-            <path class="demo-mark" data-mark="first" d="M24 137 H37 V150 M160 137 H173 V150"></path>
-            <path class="demo-mark secondary" data-mark="second" d="M78 150 A16 16 0 0 0 81.2 140.4 M214 150 A16 16 0 0 0 217.2 140.4"></path>
-            <path class="demo-mark" data-mark="third" d="M24 113.5 A16 16 0 0 0 36.8 107.1 M160 113.5 A16 16 0 0 0 172.8 107.1"></path>
+            <path class="demo-mark" data-mark="first" pathLength="1" d="M24 137 H37 V150 M160 137 H173 V150"></path>
+            <path class="demo-mark secondary" data-mark="second" pathLength="1" d="M78 150 A16 16 0 0 0 81.2 140.4 M214 150 A16 16 0 0 0 217.2 140.4"></path>
+            <path class="demo-mark" data-mark="third" pathLength="1" d="M24 113.5 A16 16 0 0 0 36.8 107.1 M160 113.5 A16 16 0 0 0 172.8 107.1"></path>
             <text x="25" y="172">小三角形</text><text x="190" y="172">放大後</text>
           </svg>
+          <div class="demo-progress" aria-hidden="true"><span data-progress></span></div>
           <p class="demo-caption" data-caption aria-live="polite">三組角一樣，形狀就固定了。</p>
           <div class="demo-action"><button type="button" data-play aria-label="播放 AAA 動畫">▶ 播放</button><span class="demo-status" data-status>按播放看過程</span></div>
         </div>
         <div class="rule" data-demo="sas">
+          <span class="rule-number">02 · SIDES + ANGLE</span>
           <strong>兩邊成比例<br>且夾角相等</strong><p><strong>兩組對應邊按相同比例</strong>放大或縮小，兩邊<strong>中間的角</strong>也一樣大。</p>
-          <svg viewBox="0 0 350 180" role="img" aria-label="兩邊成比例且夾角相等：兩邊同時放大兩倍，夾角不變">
-            <polygon class="demo-triangle" points="24,150 94,150 24,97.5"></polygon>
-            <polygon class="demo-triangle demo-moving" data-moving points="160,150 230,150 160,97.5"></polygon>
-            <path class="demo-edge" data-edge="first" d="M24 150 L94 150 M160 150 L230 150"></path>
-            <path class="demo-edge" data-edge="second" d="M24 150 L24 97.5 M160 150 L160 97.5"></path>
-            <path class="demo-mark" data-mark="first" d="M24 137 H37 V150 M160 137 H173 V150"></path>
+          <svg viewBox="0 0 350 180" role="img" aria-label="兩邊成比例且夾角相等：先放大兩邊與夾角，最後補上第三條邊">
+            <polyline class="demo-open" points="94,150 24,150 24,97.5"></polyline>
+            <polyline class="demo-open demo-moving" data-moving points="230,150 160,150 160,97.5"></polyline>
+            <path class="demo-close" data-close="small" pathLength="1" d="M94 150 L24 97.5"></path>
+            <path class="demo-close demo-moving" data-close="moving" pathLength="1" d="M230 150 L160 97.5"></path>
+            <path class="demo-edge" data-edge="first" pathLength="1" d="M24 150 L94 150 M160 150 L230 150"></path>
+            <path class="demo-edge" data-edge="second" pathLength="1" d="M24 150 L24 97.5 M160 150 L160 97.5"></path>
+            <path class="demo-mark" data-mark="first" pathLength="1" d="M24 137 H37 V150 M160 137 H173 V150"></path>
             <text x="25" y="172">小三角形</text><text x="190" y="172">放大後</text>
           </svg>
+          <div class="demo-progress" aria-hidden="true"><span data-progress></span></div>
           <p class="demo-caption" data-caption aria-live="polite">兩邊夾住的是 90° 角。</p>
           <div class="demo-action"><button type="button" data-play aria-label="播放兩邊成比例且夾角相等動畫">▶ 播放</button><span class="demo-status" data-status>按播放看過程</span></div>
         </div>
-        <div class="rule" data-demo="sss">
-          <strong>SSS</strong><p><strong>三組對應邊</strong>都按相同比例放大或縮小。</p>
-          <svg viewBox="0 0 350 180" role="img" aria-label="SSS：三邊 3、4、5 同時放大為 6、8、10">
+        <div class="rule" data-demo="sides">
+          <span class="rule-number">03 · SIDES</span>
+          <strong>三邊成比例</strong><p><strong>三組對應邊</strong>都按相同比例放大或縮小。</p>
+          <svg viewBox="0 0 350 180" role="img" aria-label="三邊成比例：三邊 3、4、5 同時放大為 6、8、10">
             <polygon class="demo-triangle" points="24,150 94,150 24,97.5"></polygon>
             <polygon class="demo-triangle demo-moving" data-moving points="160,150 230,150 160,97.5"></polygon>
-            <path class="demo-edge" data-edge="first" d="M24 150 L94 150 M160 150 L230 150"></path>
-            <path class="demo-edge" data-edge="second" d="M24 150 L24 97.5 M160 150 L160 97.5"></path>
-            <path class="demo-edge" data-edge="third" d="M94 150 L24 97.5 M230 150 L160 97.5"></path>
+            <path class="demo-edge" data-edge="first" pathLength="1" d="M24 150 L94 150 M160 150 L230 150"></path>
+            <path class="demo-edge" data-edge="second" pathLength="1" d="M24 150 L24 97.5 M160 150 L160 97.5"></path>
+            <path class="demo-edge" data-edge="third" pathLength="1" d="M94 150 L24 97.5 M230 150 L160 97.5"></path>
             <text x="25" y="172">3、4、5</text><text x="190" y="172">6、8、10</text>
           </svg>
+          <div class="demo-progress" aria-hidden="true"><span data-progress></span></div>
           <p class="demo-caption" data-caption aria-live="polite">三條邊都按同一比例改變。</p>
-          <div class="demo-action"><button type="button" data-play aria-label="播放 SSS 動畫">▶ 播放</button><span class="demo-status" data-status>按播放看過程</span></div>
+          <div class="demo-action"><button type="button" data-play aria-label="播放三邊成比例動畫">▶ 播放</button><span class="demo-status" data-status>按播放看過程</span></div>
         </div>
       </div>
       <p class="mini-note">「夾角」就是兩條邊連接處的角。以下的例子會告訴你，為甚麼第二個條件一定要看中間的角。</p>
@@ -319,23 +365,33 @@
         <div>
           <h3>可用「兩邊成比例且夾角相等」的寫法</h3>
           <ol>
-            <li>列出兩組對應邊的比例，例如 <span class="math">AB/PQ = AC/PR</span>。</li>
+            <li>列出兩組對應邊的比例，例如
+              <math class="fraction-math" aria-label="AB 除以 PQ 等於 AC 除以 PR">
+                <mfrac><mi>AB</mi><mi>PQ</mi></mfrac><mo>=</mo>
+                <mfrac><mi>AC</mi><mi>PR</mi></mfrac>
+              </math>。
+            </li>
             <li>指出<strong>兩邊夾角</strong>相等：<span class="math">∠BAC = ∠QPR</span>。</li>
             <li>得出 <span class="math">△ABC ∼ △PQR</span>（兩邊成比例且夾角相等）。</li>
           </ol>
         </div>
         <div>
-          <h3>不能偷換成 SSA</h3>
+          <h3>不能偷換成「邊邊角」</h3>
           <ol>
-            <li>若已知的是 <span class="math">AB/PQ = BC/QR</span>，兩邊的夾角應是 <span class="math">∠ABC</span> 和 <span class="math">∠PQR</span>。</li>
+            <li>若已知的是
+              <math class="fraction-math" aria-label="AB 除以 PQ 等於 BC 除以 QR">
+                <mfrac><mi>AB</mi><mi>PQ</mi></mfrac><mo>=</mo>
+                <mfrac><mi>BC</mi><mi>QR</mi></mfrac>
+              </math>，兩邊的夾角應是 <span class="math">∠ABC</span> 和 <span class="math">∠PQR</span>。
+            </li>
             <li>若只知 <span class="math">∠BAC = ∠QPR</span>，這個角<strong>不在兩條已知邊之間</strong>，不能用「兩邊成比例且夾角相等」。</li>
-            <li>應再找另一組對應角（AAA）、夾角，或第三組邊比（SSS）。</li>
+            <li>應再找另一組對應角（AAA）、夾角，或第三組邊比（三邊成比例）。</li>
           </ol>
         </div>
       </div>
       <div class="example">
         <p><strong>考試記法：</strong>「兩邊夾一角」先看角的頂點。已知 AB、BC，就要找 B 角；已知 AB、AC，就要找 A 角。</p>
-        <p>特定 SSA 數據有時碰巧只畫得出一個三角形，但<strong>不能因此把 SSA 當作通用判別法</strong>。</p>
+        <p>特定「邊邊角」數據有時碰巧只畫得出一個三角形，但<strong>不能因此把「邊邊角」當作通用判別法</strong>。</p>
       </div>
       </details>
     </section>
@@ -353,14 +409,17 @@
     const fmt = n => n.toFixed(2);
     const demoText = {
       aaa: ["第一組：兩個直角都是 90°。", "第二組：另一對角也一樣大。", "第三組角也一樣大。", "放大時，三組角都沒有改變。", "AAA：三組對應角相等，所以相似。"],
-      sas: ["先看第一組對應邊。", "再看與它相接的另一組邊。", "兩組邊同時放大，夾角仍是 90°。", "兩邊成比例且夾角相等，所以相似。"],
-      sss: ["先看第一組對應邊。", "再看第二組對應邊。", "第三組邊也按相同比例放大。", "SSS：3、4、5 變成 6、8、10，所以相似。"]
+      sas: ["已知兩條邊和它們的夾角。", "兩條邊按相同比例放大，夾角不變。", "最後補上第三條邊，形狀便確定了。", "兩邊成比例且夾角相等，所以相似。"],
+      sides: ["先看第一組對應邊。", "再看第二組對應邊。", "第三組邊也按相同比例放大。", "三邊成比例：3、4、5 變成 6、8、10，所以相似。"]
     };
 
     function drawDemo(card, factor) {
       const x = 160 + 70 * factor;
       const y = 150 - 52.5 * factor;
-      card.querySelector("[data-moving]").setAttribute("points", `160,150 ${x},150 160,${y}`);
+      card.querySelector("[data-moving]").setAttribute("points",
+        card.dataset.demo === "sas" ? `${x},150 160,150 160,${y}` : `160,150 ${x},150 160,${y}`);
+      const closingSide = card.querySelector('[data-close="moving"]');
+      if (closingSide) closingSide.setAttribute("d", `M${x} 150 L160 ${y}`);
       const edges = card.querySelectorAll("[data-edge]");
       if (edges[0]) edges[0].setAttribute("d", `M24 150 L94 150 M160 150 L${x} 150`);
       if (edges[1]) edges[1].setAttribute("d", `M24 150 L24 97.5 M160 150 L160 ${y}`);
@@ -371,19 +430,32 @@
       if (thirdAngle) thirdAngle.setAttribute("d", `M24 113.5 A16 16 0 0 0 36.8 107.1 M160 ${y + 16} A16 16 0 0 0 172.8 ${y + 9.6}`);
     }
 
+    function drawClosingSides(card, progress) {
+      card.querySelectorAll("[data-close]").forEach(side => {
+        side.style.opacity = progress > 0 ? "1" : "0";
+        side.style.strokeDashoffset = String(1 - progress);
+      });
+    }
+
     function playDemo(card) {
       const mode = card.dataset.demo;
       const button = card.querySelector("[data-play]");
       const caption = card.querySelector("[data-caption]");
       const status = card.querySelector("[data-status]");
+      const progressBar = card.querySelector("[data-progress]");
       const marks = card.querySelectorAll("[data-mark], [data-edge]");
+      const duration = mode === "aaa" ? 3700 : mode === "sas" ? 3400 : 3300;
       button.disabled = true;
       marks.forEach(mark => mark.classList.remove("visible"));
+      progressBar.style.width = "0%";
       drawDemo(card, 1);
+      if (mode === "sas") drawClosingSides(card, 0);
 
       function showFinal() {
         drawDemo(card, 2);
         marks.forEach(mark => mark.classList.add("visible"));
+        if (mode === "sas") drawClosingSides(card, 1);
+        progressBar.style.width = "100%";
         caption.textContent = demoText[mode].at(-1);
         status.textContent = "完成";
         button.textContent = "↻ 重播";
@@ -398,6 +470,18 @@
       function frame(now) {
         if (start === undefined) start = now;
         const elapsed = now - start;
+        progressBar.style.width = `${Math.min(100, elapsed / duration * 100)}%`;
+        if (mode === "sas") {
+          const grow = Math.min(1, Math.max(0, (elapsed - 500) / 1900));
+          drawDemo(card, 1 + grow * grow * (3 - 2 * grow));
+          marks.forEach(mark => mark.classList.add("visible"));
+          drawClosingSides(card, Math.min(1, Math.max(0, (elapsed - 2600) / 650)));
+          caption.textContent = demoText.sas[elapsed < 500 ? 0 : elapsed < 2600 ? 1 : 2];
+          status.textContent = elapsed < 500 ? "兩邊與夾角" : elapsed < 2600 ? "放大中" : "補上第三邊";
+          if (elapsed < duration) requestAnimationFrame(frame);
+          else showFinal();
+          return;
+        }
         const isAAA = mode === "aaa";
         const growAt = isAAA ? 1600 : 1250;
         const phase = isAAA
@@ -407,16 +491,15 @@
         const eased = progress * progress * (3 - 2 * progress);
         drawDemo(card, 1 + eased);
         marks.forEach((mark, index) => {
-          const revealAt = index * (mode === "sss" ? 420 : isAAA ? 450 : 560) + 150;
+          const revealAt = index * (mode === "sides" ? 420 : 450) + 150;
           mark.classList.toggle("visible", elapsed >= revealAt);
         });
-        if (mode === "sas") card.querySelector('[data-mark="first"]').classList.toggle("visible", elapsed >= 1250);
         caption.textContent = demoText[mode][phase];
         status.textContent = elapsed >= growAt ? "放大中" : `步驟 ${phase + 1}`;
-        if (elapsed < (isAAA ? 3700 : 3300)) requestAnimationFrame(frame);
+        if (elapsed < duration) requestAnimationFrame(frame);
         else showFinal();
       }
-      requestAnimationFrame(frame);
+      requestAnimationFrame(() => requestAnimationFrame(frame));
     }
 
     document.querySelectorAll("[data-demo]").forEach(card => {
