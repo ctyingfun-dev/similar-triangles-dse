@@ -1,0 +1,469 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>相似三角形 | 中二數學與 DSE 基礎</title>
+  <style>
+    :root {
+      --ink: #172b2b;
+      --muted: #526364;
+      --line: #cbd7d4;
+      --paper: #f8faf7;
+      --white: #fff;
+      --teal: #087a6d;
+      --teal-soft: #e3f3ee;
+      --coral: #c75238;
+      --coral-soft: #fbece6;
+      --gold: #9c650e;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: "Noto Sans TC", "Microsoft JhengHei", "PingFang TC", sans-serif;
+      line-height: 1.65;
+    }
+    button, input { font: inherit; }
+    button:focus-visible, input:focus-visible, a:focus-visible { outline: 3px solid var(--teal); outline-offset: 3px; }
+    .top {
+      border-bottom: 1px solid var(--line);
+      background: var(--white);
+    }
+    .wrap { width: min(1080px, calc(100% - 36px)); margin-inline: auto; }
+    .top .wrap { display: flex; align-items: center; justify-content: space-between; gap: 20px; min-height: 60px; }
+    .brand { font-size: 14px; font-weight: 800; color: var(--teal); }
+    .top a { color: var(--muted); text-decoration: none; font-size: 13px; }
+    .top a:hover { color: var(--teal); text-decoration: underline; }
+    main { padding-bottom: 70px; }
+    .intro { padding: 46px 0 28px; }
+    .eyebrow { margin: 0 0 10px; color: var(--teal); font-weight: 800; font-size: 12px; letter-spacing: .08em; }
+    h1 { font-size: clamp(29px, 4vw, 46px); line-height: 1.25; margin: 0; letter-spacing: 0; }
+    .lead { max-width: 760px; color: var(--muted); margin: 16px 0 0; font-size: 17px; }
+    h2 { font-size: 23px; line-height: 1.4; margin: 0 0 14px; }
+    h3 { font-size: 16px; margin: 0 0 8px; }
+    p { margin: 0 0 12px; }
+    .section { padding: 28px 0; border-top: 1px solid var(--line); }
+    .similar-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; align-items: end; max-width: 730px; margin: 20px 0; }
+    .similar-item { text-align: center; }
+    .similar-item svg { display: block; width: 100%; max-height: 210px; }
+    .similar-item svg polygon { fill: var(--teal-soft); stroke: var(--teal); stroke-width: 3; stroke-linejoin: round; }
+    .similar-item svg text { fill: var(--ink); font: 16px "Noto Sans TC", "Microsoft JhengHei", sans-serif; }
+    .similar-item p { margin: 0; font-size: 14px; }
+    .plain-point { font-size: 17px; font-weight: 700; }
+    .simple-steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; padding-left: 1.5em; margin: 18px 0 0; }
+    .simple-steps li { padding-right: 8px; }
+    .rule-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+    .rule { padding: 19px 20px; background: var(--white); border: 1px solid var(--line); border-radius: 6px; }
+    .rule > strong { display: block; color: var(--teal); font-size: 26px; line-height: 1.2; margin-bottom: 9px; }
+    .rule[data-demo="sas"] > strong { font-size: 19px; min-height: 62px; }
+    .rule p { color: var(--muted); margin: 0; font-size: 14px; }
+    .rule b { color: var(--ink); }
+    .rule svg { display: block; width: 100%; margin: 14px 0 8px; overflow: visible; }
+    .rule svg .demo-triangle { fill: var(--teal-soft); stroke: var(--teal); stroke-width: 2.5; stroke-linejoin: round; }
+    .rule svg .demo-moving { fill: var(--coral-soft); stroke: var(--coral); }
+    .rule svg .demo-mark { fill: none; stroke: var(--gold); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+    .rule svg .demo-mark.secondary { stroke: var(--teal); }
+    .rule svg text { fill: var(--muted); font: 13px "Noto Sans TC", "Microsoft JhengHei", sans-serif; }
+    .rule svg .demo-edge { stroke: var(--gold); stroke-width: 5; stroke-linecap: round; opacity: 0; }
+    .rule svg .demo-edge.visible { opacity: 1; }
+    .rule svg .demo-mark { opacity: .25; }
+    .rule svg .demo-mark.visible { opacity: 1; }
+    .rule .demo-caption { min-height: 48px; color: var(--ink); font-size: 14px; font-weight: 700; }
+    .rule .demo-action { display: flex; align-items: center; gap: 12px; margin-top: 10px; }
+    .rule button { border: 1px solid var(--teal); background: var(--white); color: var(--teal); border-radius: 5px; padding: 6px 12px; font-weight: 700; cursor: pointer; }
+    .rule button:hover { background: var(--teal-soft); }
+    .rule button:disabled { opacity: .6; cursor: wait; }
+    .rule .demo-status { font-size: 12px; color: var(--muted); }
+    .mini-note { margin: 14px 0 0; color: var(--muted); font-size: 14px; }
+    .explore-head { display: flex; justify-content: space-between; align-items: end; gap: 16px; flex-wrap: wrap; }
+    .explore-head p { color: var(--muted); margin: 0; }
+    .workspace { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(250px, .8fr); gap: 22px; align-items: start; margin-top: 21px; }
+    .figure-area { min-width: 0; }
+    .figure {
+      width: 100%;
+      display: block;
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      aspect-ratio: 760 / 370;
+    }
+    .figure .base { stroke: #637672; stroke-width: 2.5; }
+    .figure .construction { stroke: #b0c1bd; stroke-width: 1.6; stroke-dasharray: 7 7; fill: none; }
+    .figure .near-fill { fill: var(--teal); fill-opacity: .14; }
+    .figure .far-fill { fill: var(--coral); fill-opacity: .13; }
+    .figure .near-line { stroke: var(--teal); stroke-width: 3.5; fill: none; stroke-linejoin: round; }
+    .figure .far-line { stroke: var(--coral); stroke-width: 3.5; fill: none; stroke-linejoin: round; }
+    .figure .point { fill: var(--ink); }
+    .figure .near-point { fill: var(--teal); }
+    .figure .far-point { fill: var(--coral); }
+    .figure text { font: 19px "Noto Sans TC", "Microsoft JhengHei", sans-serif; fill: var(--ink); paint-order: stroke; stroke: var(--white); stroke-width: 5px; stroke-linejoin: round; }
+    .figure text.small { font-size: 16px; fill: var(--muted); }
+    .figure text.near-label { fill: var(--teal); font-weight: 800; }
+    .figure text.far-label { fill: var(--coral); font-weight: 800; }
+    figcaption { margin-top: 10px; color: var(--muted); font-size: 13px; }
+    .legend { display: flex; flex-wrap: wrap; gap: 8px 22px; margin: 16px 0 0; font-size: 14px; }
+    .legend span { display: inline-flex; align-items: center; gap: 8px; }
+    .swatch { display: inline-block; width: 18px; height: 4px; border-radius: 2px; }
+    .near-swatch { background: var(--teal); }
+    .far-swatch { background: var(--coral); }
+    .control-area { padding: 20px; background: var(--white); border: 1px solid var(--line); border-radius: 6px; }
+    .control-area label { display: block; font-size: 14px; font-weight: 700; margin-bottom: 10px; }
+    .value { color: var(--teal); font-variant-numeric: tabular-nums; font-size: 23px; }
+    input[type="range"] { width: 100%; accent-color: var(--teal); min-height: 32px; }
+    .range-ends { display: flex; justify-content: space-between; color: var(--muted); font-size: 12px; }
+    .fixed { margin-top: 21px; padding-top: 17px; border-top: 1px solid var(--line); font-size: 14px; }
+    .fixed p { margin: 0 0 6px; }
+    .fixed b { font-variant-numeric: tabular-nums; }
+    .result { margin-top: 18px; padding: 14px 0 0; border-top: 1px solid var(--line); }
+    .result div { display: flex; justify-content: space-between; gap: 10px; margin: 7px 0; font-size: 14px; }
+    .result strong { font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; }
+    details.more { margin-top: 14px; border-top: 1px solid var(--line); padding-top: 12px; }
+    details.more summary, details.exam summary { color: var(--teal); font-weight: 700; cursor: pointer; }
+    details.more div { display: flex; justify-content: space-between; gap: 10px; margin-top: 8px; font-size: 14px; }
+    details.exam { margin-top: 15px; }
+    .near-text { color: var(--teal); }
+    .far-text { color: var(--coral); }
+    .takeaway { margin-top: 20px; padding: 18px 20px; background: var(--coral-soft); border-left: 4px solid var(--coral); }
+    .takeaway strong { color: #953a28; }
+    .takeaway p { margin: 4px 0 0; }
+    .proof-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 30px; }
+    .proof-grid ol { margin: 0; padding-left: 1.5em; }
+    .proof-grid li { margin: 9px 0; }
+    .math { font-family: Georgia, "Times New Roman", serif; font-size: 1.06em; white-space: nowrap; }
+    .example { margin-top: 12px; padding: 17px 20px; background: var(--teal-soft); border-left: 4px solid var(--teal); }
+    .example p:last-child { margin-bottom: 0; }
+    footer { border-top: 1px solid var(--line); padding: 24px 0 40px; color: var(--muted); font-size: 13px; }
+    @media (max-width: 760px) {
+      .intro { padding-top: 34px; }
+      .rule-grid, .workspace, .proof-grid, .simple-steps { grid-template-columns: 1fr; }
+      .rule-grid { gap: 10px; }
+      .rule { padding: 15px 17px; }
+      .figure { aspect-ratio: 760 / 420; }
+    }
+    @media (max-width: 440px) {
+      .wrap { width: min(100% - 24px, 1080px); }
+      .top .wrap { min-height: 56px; }
+      .top a { font-size: 12px; }
+      .figure text { font-size: 23px; }
+      .figure text.small { font-size: 19px; }
+      .similar-grid { grid-template-columns: 1fr; gap: 10px; }
+      .similar-item svg { max-height: 175px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="top">
+    <div class="wrap">
+      <div class="brand">中二數學 · DSE 基礎</div>
+      <a href="#counterexample">看看邊邊角 ↓</a>
+    </div>
+  </header>
+  <main class="wrap">
+    <section class="intro">
+      <p class="eyebrow">相似三角形 / SIMILAR TRIANGLES</p>
+      <h1>相似三角形：<br>形狀一樣，大小可以不同</h1>
+      <p class="lead">先認識甚麼是「相似」，再看看為甚麼只知道「兩條邊和一個角」有時仍然不夠。</p>
+    </section>
+
+    <section class="section" aria-labelledby="similar-title">
+      <h2 id="similar-title">甚麼是相似三角形？</h2>
+      <p>想像把一個三角形放大或縮小，沒有把它拉歪：<strong>形狀不變</strong>，兩個三角形就相似。</p>
+      <div class="similar-grid">
+        <div class="similar-item">
+          <svg viewBox="0 0 280 190" role="img" aria-label="小三角形，三條邊長為 3、4、5">
+            <polygon points="55,155 155,155 55,80"></polygon>
+            <text x="95" y="179">4</text><text x="35" y="123">3</text><text x="111" y="108">5</text>
+          </svg>
+          <p>小三角形：3、4、5</p>
+        </div>
+        <div class="similar-item">
+          <svg viewBox="0 0 280 190" role="img" aria-label="大三角形，三條邊長為 6、8、10">
+            <polygon points="40,165 240,165 40,15"></polygon>
+            <text x="133" y="187">8</text><text x="19" y="94">6</text><text x="165" y="86">10</text>
+          </svg>
+          <p>大三角形：6、8、10</p>
+        </div>
+      </div>
+      <p class="plain-point">每條對應的邊都變成 2 倍，角度沒有改變，所以它們相似。</p>
+      <p class="mini-note">「對應」即兩個三角形中位置相同的邊或角。三角形轉了方向，仍然可以相似。</p>
+    </section>
+
+    <section class="section" aria-labelledby="rules-title">
+      <h2 id="rules-title">怎樣知道兩個三角形相似？</h2>
+      <div class="rule-grid">
+        <div class="rule" data-demo="aaa">
+          <strong>AAA</strong><p><strong>三組對應角</strong>一樣大。（其實知道兩組，第三組也會相等。）</p>
+          <svg viewBox="0 0 350 180" role="img" aria-label="AAA：三組對應角相等，三角形放大後仍相似">
+            <polygon class="demo-triangle" points="24,150 94,150 24,97.5"></polygon>
+            <polygon class="demo-triangle demo-moving" data-moving points="160,150 230,150 160,97.5"></polygon>
+            <path class="demo-mark" data-mark="first" d="M24 137 H37 V150 M160 137 H173 V150"></path>
+            <path class="demo-mark secondary" data-mark="second" d="M78 150 A16 16 0 0 0 81.2 140.4 M214 150 A16 16 0 0 0 217.2 140.4"></path>
+            <path class="demo-mark" data-mark="third" d="M24 113.5 A16 16 0 0 0 36.8 107.1 M160 113.5 A16 16 0 0 0 172.8 107.1"></path>
+            <text x="25" y="172">小三角形</text><text x="190" y="172">放大後</text>
+          </svg>
+          <p class="demo-caption" data-caption aria-live="polite">三組角一樣，形狀就固定了。</p>
+          <div class="demo-action"><button type="button" data-play aria-label="播放 AAA 動畫">▶ 播放</button><span class="demo-status" data-status>按播放看過程</span></div>
+        </div>
+        <div class="rule" data-demo="sas">
+          <strong>兩邊成比例<br>且夾角相等</strong><p><strong>兩組對應邊按相同比例</strong>放大或縮小，兩邊<strong>中間的角</strong>也一樣大。</p>
+          <svg viewBox="0 0 350 180" role="img" aria-label="兩邊成比例且夾角相等：兩邊同時放大兩倍，夾角不變">
+            <polygon class="demo-triangle" points="24,150 94,150 24,97.5"></polygon>
+            <polygon class="demo-triangle demo-moving" data-moving points="160,150 230,150 160,97.5"></polygon>
+            <path class="demo-edge" data-edge="first" d="M24 150 L94 150 M160 150 L230 150"></path>
+            <path class="demo-edge" data-edge="second" d="M24 150 L24 97.5 M160 150 L160 97.5"></path>
+            <path class="demo-mark" data-mark="first" d="M24 137 H37 V150 M160 137 H173 V150"></path>
+            <text x="25" y="172">小三角形</text><text x="190" y="172">放大後</text>
+          </svg>
+          <p class="demo-caption" data-caption aria-live="polite">兩邊夾住的是 90° 角。</p>
+          <div class="demo-action"><button type="button" data-play aria-label="播放兩邊成比例且夾角相等動畫">▶ 播放</button><span class="demo-status" data-status>按播放看過程</span></div>
+        </div>
+        <div class="rule" data-demo="sss">
+          <strong>SSS</strong><p><strong>三組對應邊</strong>都按相同比例放大或縮小。</p>
+          <svg viewBox="0 0 350 180" role="img" aria-label="SSS：三邊 3、4、5 同時放大為 6、8、10">
+            <polygon class="demo-triangle" points="24,150 94,150 24,97.5"></polygon>
+            <polygon class="demo-triangle demo-moving" data-moving points="160,150 230,150 160,97.5"></polygon>
+            <path class="demo-edge" data-edge="first" d="M24 150 L94 150 M160 150 L230 150"></path>
+            <path class="demo-edge" data-edge="second" d="M24 150 L24 97.5 M160 150 L160 97.5"></path>
+            <path class="demo-edge" data-edge="third" d="M94 150 L24 97.5 M230 150 L160 97.5"></path>
+            <text x="25" y="172">3、4、5</text><text x="190" y="172">6、8、10</text>
+          </svg>
+          <p class="demo-caption" data-caption aria-live="polite">三條邊都按同一比例改變。</p>
+          <div class="demo-action"><button type="button" data-play aria-label="播放 SSS 動畫">▶ 播放</button><span class="demo-status" data-status>按播放看過程</span></div>
+        </div>
+      </div>
+      <p class="mini-note">「夾角」就是兩條邊連接處的角。以下的例子會告訴你，為甚麼第二個條件一定要看中間的角。</p>
+    </section>
+
+    <section class="section" id="counterexample" aria-labelledby="counter-title">
+      <div class="explore-head">
+        <div>
+          <h2 id="counter-title">為甚麼「邊邊角」不夠？</h2>
+          <p>看圖中同一條斜線上的 C₁ 和 C₂。它們都能用來畫三角形。</p>
+        </div>
+      </div>
+      <ol class="simple-steps">
+        <li>先畫一條長 <strong>10</strong> 的 AB。</li>
+        <li>從 A 畫出一條 <strong>30°</strong> 的斜線。</li>
+        <li>在斜線上找 C，令 BC 長 <strong>6</strong>。原來可以找到 <strong>兩個位置</strong>！</li>
+      </ol>
+      <div class="workspace">
+        <div class="figure-area">
+          <svg class="figure" viewBox="0 0 760 370" role="img" aria-labelledby="diagram-title diagram-desc">
+            <title id="diagram-title">邊邊角的兩個三角形</title>
+            <desc id="diagram-desc">A、B 固定，從 A 發出的三十度射線與以 B 為圓心的圓相交於 C1 和 C2，形成兩個不相似的三角形。</desc>
+            <circle id="construction-circle" class="construction" cx="72" cy="308" r="180"></circle>
+            <line class="construction" x1="72" y1="308" x2="610" y2="-3"></line>
+            <polygon id="far-fill" class="far-fill"></polygon>
+            <polygon id="near-fill" class="near-fill"></polygon>
+            <polyline id="far-line" class="far-line"></polyline>
+            <polyline id="near-line" class="near-line"></polyline>
+            <line class="base" x1="72" y1="308" x2="372" y2="308"></line>
+            <circle class="point" cx="72" cy="308" r="5"></circle>
+            <circle class="point" cx="372" cy="308" r="5"></circle>
+            <circle id="near-dot" class="near-point" r="6"></circle>
+            <circle id="far-dot" class="far-point" r="6"></circle>
+            <text x="46" y="334">A</text>
+            <text x="365" y="337">B</text>
+            <text x="216" y="337" class="small">10</text>
+            <text x="107" y="291" class="small">30°</text>
+            <text id="near-label" class="near-label"></text>
+            <text id="far-label" class="far-label"></text>
+            <text id="near-side" class="small"></text>
+            <text id="far-side" class="small"></text>
+          </svg>
+          <div class="legend" aria-hidden="true">
+            <span><i class="swatch near-swatch"></i>較短的 AC₁</span>
+            <span><i class="swatch far-swatch"></i>較長的 AC₂</span>
+            <span>虛線圓：從 B 量度同一長度</span>
+          </div>
+          <figcaption>C₁ 和 C₂ 都在 30° 斜線上，與 B 的距離也相同；但它們是兩個不同的位置。</figcaption>
+        </div>
+        <aside class="control-area" aria-label="調整反例">
+          <label for="bc-range">邊長 <span class="math">BC</span> = <output id="bc-value" class="value" for="bc-range">6.0</output></label>
+          <input id="bc-range" type="range" min="5.2" max="8.0" step="0.1" value="6" aria-describedby="range-hint">
+          <div class="range-ends"><span>5.2</span><span>8.0</span></div>
+          <p id="range-hint" class="mini-note">試拖動滑桿，看看 C₁、C₂ 如何移動。</p>
+          <div class="fixed">
+            <p>兩個三角形都有：</p>
+            <p><b>AB = 10</b>、<b>BC = <span id="bc-fixed">6.0</span></b></p>
+            <p><b>A 角 = 30°</b></p>
+          </div>
+          <div class="result" aria-live="polite" aria-atomic="true">
+            <h3>可是 AC 的長度不同</h3>
+            <div><span class="near-text">△ABC₁</span><strong id="near-length">AC₁ = 5.34</strong></div>
+            <div><span class="far-text">△ABC₂</span><strong id="far-length">AC₂ = 11.98</strong></div>
+          </div>
+          <details class="more">
+            <summary>再看看角度</summary>
+            <div><span class="near-text">C₁ 角</span><strong id="near-angle">123.6°</strong></div>
+            <div><span class="far-text">C₂ 角</span><strong id="far-angle">56.4°</strong></div>
+          </details>
+        </aside>
+      </div>
+      <div class="takeaway">
+        <strong>一句話：同樣的「兩邊一角」，可能畫出不同形狀。</strong>
+        <p>兩個三角形的 AB、BC 和 A 角都一樣，但 AC 不一樣，所以它們<strong>不相似</strong>。這個 A 角不在 AB 和 BC 的中間；AB 和 BC 的夾角其實是 <strong>B 角</strong>。</p>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="proof-title">
+      <h2 id="proof-title">最簡單的記法</h2>
+      <p class="plain-point">已知 AB 和 BC，就要看 B 角；已知 AB 和 AC，就要看 A 角。這樣才是「兩邊夾一角」。</p>
+      <details class="exam">
+        <summary>展開 DSE 證明寫法</summary>
+      <div class="proof-grid">
+        <div>
+          <h3>可用「兩邊成比例且夾角相等」的寫法</h3>
+          <ol>
+            <li>列出兩組對應邊的比例，例如 <span class="math">AB/PQ = AC/PR</span>。</li>
+            <li>指出<strong>兩邊夾角</strong>相等：<span class="math">∠BAC = ∠QPR</span>。</li>
+            <li>得出 <span class="math">△ABC ∼ △PQR</span>（兩邊成比例且夾角相等）。</li>
+          </ol>
+        </div>
+        <div>
+          <h3>不能偷換成 SSA</h3>
+          <ol>
+            <li>若已知的是 <span class="math">AB/PQ = BC/QR</span>，兩邊的夾角應是 <span class="math">∠ABC</span> 和 <span class="math">∠PQR</span>。</li>
+            <li>若只知 <span class="math">∠BAC = ∠QPR</span>，這個角<strong>不在兩條已知邊之間</strong>，不能用「兩邊成比例且夾角相等」。</li>
+            <li>應再找另一組對應角（AAA）、夾角，或第三組邊比（SSS）。</li>
+          </ol>
+        </div>
+      </div>
+      <div class="example">
+        <p><strong>考試記法：</strong>「兩邊夾一角」先看角的頂點。已知 AB、BC，就要找 B 角；已知 AB、AC，就要找 A 角。</p>
+        <p>特定 SSA 數據有時碰巧只畫得出一個三角形，但<strong>不能因此把 SSA 當作通用判別法</strong>。</p>
+      </div>
+      </details>
+    </section>
+  </main>
+  <footer>
+    <div class="wrap">香港 DSE 數學幾何溫習 · 相似三角形判別</div>
+  </footer>
+  <script>
+    const range = document.getElementById("bc-range");
+    const byId = id => document.getElementById(id);
+    const A = { x: 72, y: 308 };
+    const B = { x: 372, y: 308 };
+    const scale = 30;
+    const theta = Math.PI / 6;
+    const fmt = n => n.toFixed(2);
+    const demoText = {
+      aaa: ["第一組：兩個直角都是 90°。", "第二組：另一對角也一樣大。", "第三組角也一樣大。", "放大時，三組角都沒有改變。", "AAA：三組對應角相等，所以相似。"],
+      sas: ["先看第一組對應邊。", "再看與它相接的另一組邊。", "兩組邊同時放大，夾角仍是 90°。", "兩邊成比例且夾角相等，所以相似。"],
+      sss: ["先看第一組對應邊。", "再看第二組對應邊。", "第三組邊也按相同比例放大。", "SSS：3、4、5 變成 6、8、10，所以相似。"]
+    };
+
+    function drawDemo(card, factor) {
+      const x = 160 + 70 * factor;
+      const y = 150 - 52.5 * factor;
+      card.querySelector("[data-moving]").setAttribute("points", `160,150 ${x},150 160,${y}`);
+      const edges = card.querySelectorAll("[data-edge]");
+      if (edges[0]) edges[0].setAttribute("d", `M24 150 L94 150 M160 150 L${x} 150`);
+      if (edges[1]) edges[1].setAttribute("d", `M24 150 L24 97.5 M160 150 L160 ${y}`);
+      if (edges[2]) edges[2].setAttribute("d", `M94 150 L24 97.5 M${x} 150 L160 ${y}`);
+      const secondAngle = card.querySelector('[data-mark="second"]');
+      if (secondAngle) secondAngle.setAttribute("d", `M78 150 A16 16 0 0 0 81.2 140.4 M${x - 16} 150 A16 16 0 0 0 ${x - 12.8} 140.4`);
+      const thirdAngle = card.querySelector('[data-mark="third"]');
+      if (thirdAngle) thirdAngle.setAttribute("d", `M24 113.5 A16 16 0 0 0 36.8 107.1 M160 ${y + 16} A16 16 0 0 0 172.8 ${y + 9.6}`);
+    }
+
+    function playDemo(card) {
+      const mode = card.dataset.demo;
+      const button = card.querySelector("[data-play]");
+      const caption = card.querySelector("[data-caption]");
+      const status = card.querySelector("[data-status]");
+      const marks = card.querySelectorAll("[data-mark], [data-edge]");
+      button.disabled = true;
+      marks.forEach(mark => mark.classList.remove("visible"));
+      drawDemo(card, 1);
+
+      function showFinal() {
+        drawDemo(card, 2);
+        marks.forEach(mark => mark.classList.add("visible"));
+        caption.textContent = demoText[mode].at(-1);
+        status.textContent = "完成";
+        button.textContent = "↻ 重播";
+        button.disabled = false;
+      }
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        showFinal();
+        return;
+      }
+
+      let start;
+      function frame(now) {
+        if (start === undefined) start = now;
+        const elapsed = now - start;
+        const isAAA = mode === "aaa";
+        const growAt = isAAA ? 1600 : 1250;
+        const phase = isAAA
+          ? (elapsed < 600 ? 0 : elapsed < 1050 ? 1 : elapsed < growAt ? 2 : 3)
+          : (elapsed < 650 ? 0 : elapsed < growAt ? 1 : 2);
+        const progress = Math.min(1, Math.max(0, (elapsed - growAt) / 1900));
+        const eased = progress * progress * (3 - 2 * progress);
+        drawDemo(card, 1 + eased);
+        marks.forEach((mark, index) => {
+          const revealAt = index * (mode === "sss" ? 420 : isAAA ? 450 : 560) + 150;
+          mark.classList.toggle("visible", elapsed >= revealAt);
+        });
+        if (mode === "sas") card.querySelector('[data-mark="first"]').classList.toggle("visible", elapsed >= 1250);
+        caption.textContent = demoText[mode][phase];
+        status.textContent = elapsed >= growAt ? "放大中" : `步驟 ${phase + 1}`;
+        if (elapsed < (isAAA ? 3700 : 3300)) requestAnimationFrame(frame);
+        else showFinal();
+      }
+      requestAnimationFrame(frame);
+    }
+
+    document.querySelectorAll("[data-demo]").forEach(card => {
+      card.querySelector("[data-play]").addEventListener("click", () => playDemo(card));
+    });
+
+    function render() {
+      const a = Number(range.value);
+      const projection = 10 * Math.cos(theta);
+      const offset = Math.sqrt(a * a - 25);
+      const near = projection - offset;
+      const far = projection + offset;
+      const point = t => ({ x: A.x + t * Math.cos(theta) * scale, y: A.y - t * Math.sin(theta) * scale });
+      const c1 = point(near);
+      const c2 = point(far);
+      const coords = p => `${p.x},${p.y}`;
+      const poly = p => `${coords(A)} ${coords(B)} ${coords(p)}`;
+      byId("construction-circle").setAttribute("cx", B.x);
+      byId("construction-circle").setAttribute("r", a * scale);
+      byId("near-fill").setAttribute("points", poly(c1));
+      byId("far-fill").setAttribute("points", poly(c2));
+      byId("near-line").setAttribute("points", poly(c1));
+      byId("far-line").setAttribute("points", poly(c2));
+      for (const [name, p] of [["near", c1], ["far", c2]]) {
+        byId(`${name}-dot`).setAttribute("cx", p.x);
+        byId(`${name}-dot`).setAttribute("cy", p.y);
+        const label = byId(`${name}-label`);
+        label.setAttribute("x", p.x + (name === "near" ? -22 : 10));
+        label.setAttribute("y", p.y - 13);
+        label.textContent = name === "near" ? "C₁" : "C₂";
+        const side = byId(`${name}-side`);
+        side.setAttribute("x", (B.x + p.x) / 2 + (name === "near" ? -10 : 14));
+        side.setAttribute("y", (B.y + p.y) / 2 + (name === "near" ? -8 : 2));
+        side.textContent = a.toFixed(1);
+      }
+      const nearAngle = Math.acos((near * near + a * a - 100) / (2 * near * a)) * 180 / Math.PI;
+      const farAngle = Math.acos((far * far + a * a - 100) / (2 * far * a)) * 180 / Math.PI;
+      byId("bc-value").value = a.toFixed(1);
+      byId("bc-fixed").textContent = a.toFixed(1);
+      byId("near-length").textContent = `AC₁ = ${fmt(near)}`;
+      byId("far-length").textContent = `AC₂ = ${fmt(far)}`;
+      byId("near-angle").textContent = `${nearAngle.toFixed(1)}°`;
+      byId("far-angle").textContent = `${farAngle.toFixed(1)}°`;
+      byId("diagram-desc").textContent = `AB 等於 10、BC₁ 和 BC₂ 都等於 ${a.toFixed(1)}、A 角等於 30 度；AC₁ 等於 ${fmt(near)}，AC₂ 等於 ${fmt(far)}。`;
+    }
+    range.addEventListener("input", render);
+    render();
+  </script>
+</body>
+</html>
